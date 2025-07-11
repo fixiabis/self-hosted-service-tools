@@ -28,13 +28,19 @@ install_supabase() {
 
     echo "\\nnetworks:\\n  $NETWORK_NAME:\\n    external: true\\n    name: $NETWORK_NAME" >>docker-compose.yml
 
-    sed -i.bak "/^    container_name:/i\\
+    echo "\\nnetworks:\\n  $NETWORK_NAME:\\n    external: true\\n    name: $NETWORK_NAME" >>docker-compose.s3.yml
+
+    sed -i.bak "/^    image:/i\\
     networks: ['$NETWORK_NAME']
 " docker-compose.yml
 
+    sed -i.bak "/^    image:/i\\
+    networks: ['$NETWORK_NAME']
+" docker-compose.s3.yml
+
     docker compose pull
 
-    docker compose -p "$PROJECT_PREFIX-supabase" up -d
+    docker compose -p "$PROJECT_PREFIX-supabase" -f ./docker-compose.yml -f ./docker-compose.s3.yml up -d
 
     cd ..
 }
@@ -64,7 +70,7 @@ install_n8n() {
 
     sed -i.bak "s|  networks: \\['demo'\\]|  networks: ['demo', '$NETWORK_NAME']|g" docker-compose.yml
 
-    docker compose -p "$PROJECT_PREFIX-n8n" up -d
+    docker compose -p "$PROJECT_PREFIX-n8n" -f ./docker-compose.yml up -d
 
     cd ..
 }
