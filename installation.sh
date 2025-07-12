@@ -1,9 +1,7 @@
 #!/bin/bash
 
-SUPABASE_CONTAINER_NAME="${SUPABASE_CONTAINER_NAME:-supabase-container}"
-N8N_CONTAINER_NAME="${N8N_CONTAINER_NAME:-n8n-container}"
-NETWORK_NAME="${NETWORK_NAME:-snap-stack-shared}"
-PROJECT_PREFIX="${PROJECT_PREFIX:-snap-stack}"
+PROJECT_NAME="${PROJECT_NAME:-snap-stack}"
+NETWORK_NAME="${PROJECT_NAME}-network"
 
 install_supabase() {
     git clone --filter=blob:none --no-checkout --branch master --single-branch https://github.com/supabase/supabase supabase-hosting-source
@@ -18,61 +16,57 @@ install_supabase() {
 
     cd ..
 
-    mkdir "$SUPABASE_CONTAINER_NAME"
+    mkdir supabase-container
 
-    cp -rf supabase-hosting-source/docker/* "$SUPABASE_CONTAINER_NAME"
+    cp -rf supabase-hosting-source/docker/* supabase-container
 
-    cp supabase-hosting-source/docker/.env.example "$SUPABASE_CONTAINER_NAME/.env"
+    cp supabase-hosting-source/docker/.env.example supabase-container/.env
 
-    cd "$SUPABASE_CONTAINER_NAME"
+    echo "\\nnetworks:\\n  $NETWORK_NAME:\\n    external: true\\n    name: $NETWORK_NAME" >>supabase-container/docker-compose.yml
 
-    echo "\\nnetworks:\\n  $NETWORK_NAME:\\n    external: true\\n    name: $NETWORK_NAME" >>docker-compose.yml
-
-    echo "\\nnetworks:\\n  $NETWORK_NAME:\\n    external: true\\n    name: $NETWORK_NAME" >>docker-compose.s3.yml
+    echo "\\nnetworks:\\n  $NETWORK_NAME:\\n    external: true\\n    name: $NETWORK_NAME" >>supabase-container/docker-compose.s3.yml
 
     sed -i.bak "/^    image:/i\\
     networks: ['$NETWORK_NAME']
-" docker-compose.yml
+" supabase-container/docker-compose.yml
 
     sed -i.bak "/^    image:/i\\
     networks: ['$NETWORK_NAME']
-" docker-compose.s3.yml
+" supabase-container/docker-compose.s3.yml
 
-    docker compose pull
+    docker compose -f ./supabase-container/docker-compose.yml -f ./supabase-container/docker-compose.s3.yml pull
 
-    docker compose -p "$PROJECT_PREFIX-supabase" -f ./docker-compose.yml -f ./docker-compose.s3.yml up -d
-
-    cd ..
+    docker compose -p "$PROJECT_NAME-supabase" -f ./supabase-container/docker-compose.yml -f ./supabase-container/docker-compose.s3.yml up -d
 }
 
 install_n8n() {
-    git clone https://github.com/n8n-io/self-hosted-ai-starter-kit.git "$N8N_CONTAINER_NAME"
+    git clone https://github.com/n8n-io/self-hosted-ai-starter-kit.git n8n-hosting-source
 
-    cd "$N8N_CONTAINER_NAME"
+    mkdir -p n8n-container
 
-    cp .env.example .env
+    cp -rf n8n-hosting-source/* n8n-container
 
-    mkdir -p volumes
+    cp n8n-hosting-source/.env.example n8n-container/.env
 
-    sed -i.bak 's|- postgres_storage:|- ./volumes/postgres_storage:|g' docker-compose.yml
+    mkdir -p n8n-container/volumes
 
-    sed -i.bak 's|- n8n_storage:|- ./volumes/n8n_storage:|g' docker-compose.yml
+    sed -i.bak 's|- postgres_storage:|- ./volumes/postgres_storage:|g' n8n-container/docker-compose.yml
 
-    sed -i.bak 's|- qdrant_storage:|- ./volumes/qdrant_storage:|g' docker-compose.yml
+    sed -i.bak 's|- n8n_storage:|- ./volumes/n8n_storage:|g' n8n-container/docker-compose.yml
 
-    sed -i.bak 's|- ollama_storage:|- ./volumes/ollama_storage:|g' docker-compose.yml
+    sed -i.bak 's|- qdrant_storage:|- ./volumes/qdrant_storage:|g' n8n-container/docker-compose.yml
+
+    sed -i.bak 's|- ollama_storage:|- ./volumes/ollama_storage:|g' n8n-container/docker-compose.yml
 
     sed -i.bak "/^networks:/a\\
   $NETWORK_NAME:\\
     external: true\\
     name: $NETWORK_NAME
-" docker-compose.yml
+" n8n-container/docker-compose.yml
 
-    sed -i.bak "s|  networks: \\['demo'\\]|  networks: ['demo', '$NETWORK_NAME']|g" docker-compose.yml
+    sed -i.bak "s|  networks: \\['demo'\\]|  networks: ['demo', '$NETWORK_NAME']|g" n8n-container/docker-compose.yml
 
-    docker compose -p "$PROJECT_PREFIX-n8n" -f ./docker-compose.yml up -d
-
-    cd ..
+    docker compose -p "$PROJECT_NAME-n8n" -f ./n8n-container/docker-compose.yml up -d
 }
 
 main() {
