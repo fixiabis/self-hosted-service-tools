@@ -21,10 +21,11 @@ echo "PROJECT_NAME=$PROJECT_NAME" >> .env
     ```sh
     sh ./setup_supabase.sh
     ```
+    - 更多安裝細節可以參考此連結，來調整安裝腳本: https://supabase.com/docs/guides/self-hosting/docker
 2. 接著到 `supabase-container` 資料夾中，調整 `.env` 檔案（後台帳號密碼、資料庫密碼等）
 3. 在專案目錄下面執行以下腳本，啟動 supabase 服務：
     ```sh
-    sh ./setup_supabase.sh
+    sh ./start_supabase.sh
     ```
 4. 如果要關閉，可以在專案目錄下面執行以下腳本，停止 supabase 服務：
     ```sh
@@ -37,10 +38,11 @@ echo "PROJECT_NAME=$PROJECT_NAME" >> .env
     ```sh
     sh ./setup_n8n.sh
     ```
-2. 接著到 `n8n-container` 資料夾中，調整 `.env` 檔案（後台帳號密碼、資料庫密碼等）
+    - 更多安裝細節可以參考此連結，來調整安裝腳本: https://docs.n8n.io/hosting/starter-kits/ai-starter-kit/#whats-included
+2. 接著到 `n8n-container` 資料夾中，調整 `.env` 檔案（資料庫密碼等）
 3. 在專案目錄下面執行以下腳本，啟動 n8n 服務：
     ```sh
-    sh ./setup_n8n.sh
+    sh ./start_n8n.sh
     ```
 4. 如果要關閉，可以在專案目錄下面執行以下腳本，停止 n8n 服務：
     ```sh
