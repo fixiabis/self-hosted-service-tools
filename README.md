@@ -1,11 +1,26 @@
-# snap stack
+# self hosted install tools
 
-可以快速建立 supabase 和 n8n 基礎環境，請確保已安裝 docker
+可以快速各種服務的基礎環境，請確保已安裝 docker
 
-假設專案名稱是 your-project，你可以使用以下腳本:
+假設專案名稱是 your-project，你可以使用以下腳本，完成初始的設定:
 
 ```sh
-git clone https://github.com/fixiabis/snap-stack.git your-project
-cd your-project
-PROJECT_PREFIX=your-project sh ./installation.sh
+PROJECT_NAME=your-project
+git clone https://github.com/fixiabis/self-hosted-install-tools.git $PROJECT_NAME
+cd $PROJECT_NAME
+echo "PROJECT_NAME=$PROJECT_NAME" >> .env
+```
+
+接著，依照你的需要安裝服務：
+
+**Supabase**
+
+```sh
+sh ./install_supabase.sh
+```
+
+**N8N**
+
+```sh
+sh ./install_n8n.sh
 ```
