@@ -32,7 +32,11 @@ echo "PROJECT_NAME=$PROJECT_NAME" >> .env
     sh ./stop_supabase.sh
     ```
 
-## 安裝與設定 N8N
+### 注意事項
+
+**安裝後，資料庫的資料都會放在 `supabase-container/volumes` 中，請小心不要刪除 `supabase-container` 資料夾**
+
+## 安裝與設定 n8n
 
 1. 在專案目錄下面執行以下腳本，安裝 n8n 服務：
     ```sh
@@ -48,3 +52,7 @@ echo "PROJECT_NAME=$PROJECT_NAME" >> .env
     ```sh
     sh ./stop_n8n.sh
     ```
+
+### 注意事項
+
+**安裝後，資料庫的資料都會放在 `n8n-container/volumes` 中，請小心不要刪除 `n8n-container` 資料夾**
