@@ -32,6 +32,8 @@ setup_supabase() {
     sed -i.bak "/^    image:/i\\
     networks: ['$NETWORK_NAME']
 " supabase-container/docker-compose.s3.yml
+
+    docker compose -f ./supabase-container/docker-compose.yml -f ./supabase-container/docker-compose.s3.yml pull
 }
 
 setup_supabase "$@"
