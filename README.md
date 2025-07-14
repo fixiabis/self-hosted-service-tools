@@ -1,4 +1,4 @@
-# self hosted install tools
+# self hosted service tools
 
 可以快速各種服務的基礎環境，請確保已安裝 docker
 
@@ -6,7 +6,7 @@
 
 ```sh
 PROJECT_NAME=your-project
-git clone https://github.com/fixiabis/self-hosted-install-tools.git $PROJECT_NAME
+git clone https://github.com/fixiabis/self-hosted-service-tools.git $PROJECT_NAME
 cd $PROJECT_NAME
 echo "PROJECT_NAME=$PROJECT_NAME" >> .env
 ```

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-install_supabase() {
+setup_supabase() {
     source ./initialize.sh
 
     git clone --filter=blob:none --no-checkout --branch master --single-branch https://github.com/supabase/supabase supabase-hosting-source
@@ -32,10 +32,6 @@ install_supabase() {
     sed -i.bak "/^    image:/i\\
     networks: ['$NETWORK_NAME']
 " supabase-container/docker-compose.s3.yml
-
-    docker compose -f ./supabase-container/docker-compose.yml -f ./supabase-container/docker-compose.s3.yml pull
-
-    docker compose -p "$PROJECT_NAME-supabase" -f ./supabase-container/docker-compose.yml -f ./supabase-container/docker-compose.s3.yml up -d
 }
 
-install_supabase "$@"
+setup_supabase "$@"
